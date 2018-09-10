@@ -46,8 +46,8 @@ Usage
 
 ```js
 module "snapshot" {
-    source = "git::ssh://git@bitbucket.org/teamscalar/snapshot"
-    customer          = "Scalar"
+    source = "git::ssh://git@github.com/carrotinsights/lambda-snapshot.git"
+    customer          = "Customer"
     environment       = "prod"
     snap_schedule_expression  = "cron(13 23 * * ? *)"
     prune_schedule_expression = "cron(15 2 * * ? *)"
