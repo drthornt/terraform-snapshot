@@ -37,7 +37,14 @@ def lambda_handler(event, context):
             retention_days = 7
 
         try:
-            InstanceName = [tag['Value'] for tag in instance.tags if tag['Key'] == 'Name']
+            for tag in instance.tags:
+                if tag['Key'] == 'Name':
+                    if tag['Value']:
+                        InstanceName = tag['Value']
+                    else:
+                        InstanceName = "NoInstanceName"
+                else:
+                    InstanceName = "NoInstanceName"
 
         except IndexError:
             print("failed to get intance name for instance {}".format(instance['InstanceId']))
