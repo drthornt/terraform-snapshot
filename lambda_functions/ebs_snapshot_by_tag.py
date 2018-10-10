@@ -1,6 +1,8 @@
 import boto3
 import collections
 import datetime
+import sys
+
 # from __future__ import print_function
 
 ec = boto3.client('ec2')
@@ -38,7 +40,7 @@ def lambda_handler(event, context):
                 if t['Key'] == 'Name'][0]
         except IndexError:
             print("failed to get intance name for instance {}".format(instance['InstanceId']))
-            exit 1
+            exit(1)
 
         for dev in instance['BlockDeviceMappings']:
             if dev.get('Ebs', None) is None:
