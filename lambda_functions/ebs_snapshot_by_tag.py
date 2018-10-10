@@ -38,14 +38,9 @@ def lambda_handler(event, context):
         try:
             for tag in instance['Tags']:
                 if tag['Key'] == 'Name':
-                    if tag['Value']:
+                    if 'Value' in tag.keys():
                         InstanceName = tag['Value']
-                    else:
-                        InstanceName = "NoInstanceName"
-                else:
-                    InstanceName = "NoInstanceName"
-
-        except IndexError:
+        except:
             print("failed to get intance name for instance {}".format(instance['InstanceId']))
             exit(1)
 
@@ -77,7 +72,7 @@ def lambda_handler(event, context):
                     {'Key': 'DeviceName', 'Value': devicename}
                 ]
             )
-            time.sleep(1)
+            time.sleep(0.5)
             
 
             print "Adding snapshot id %s to retention tag queue" % snap['SnapshotId']
@@ -103,5 +98,6 @@ def lambda_handler(event, context):
 #                {'Key': 'DeleteOn', 'Value': delete_fmt},
 #            ]
 #        )
+
 
 
