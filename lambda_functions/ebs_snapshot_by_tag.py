@@ -2,10 +2,12 @@ import boto3
 import collections
 import datetime
 import sys
+import pprint
 
 # from __future__ import print_function
 
 ec = boto3.client('ec2')
+pp = pprint.PrettyPrinter(indent=4)
 
 def lambda_handler(event, context):
     reservations = ec.describe_instances(
@@ -35,9 +37,8 @@ def lambda_handler(event, context):
             retention_days = 7
 
         try:
-            intancename = [
-                int(t.get('Value')) for t in instance['Tags']
-                if t['Key'] == 'Name'][0]
+            InstanceName = [tag['Value'] for tag in instance.tags if tag['Key'] == 'Name']
+
         except IndexError:
             print("failed to get intance name for instance {}".format(instance['InstanceId']))
             exit(1)
@@ -66,7 +67,7 @@ def lambda_handler(event, context):
                 Tags=[
                     {'Key': 'CreatedBy', 'Value': 'ebs_snapshot_by_tag'},
                     {'Key': 'DeleteOn', 'Value': delete_fmt},
-                    {'Key': 'InstanceName', 'Value': delete_fmt},
+                    {'Key': 'InstanceName', 'Value': InstanceName},
                     {'Key': 'DeviceName', 'Value': devicename},
                 ]
             )
