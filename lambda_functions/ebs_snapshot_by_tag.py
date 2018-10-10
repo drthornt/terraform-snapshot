@@ -2,12 +2,11 @@ import boto3
 import collections
 import datetime
 import sys
-import pprint
+import time
 
 # from __future__ import print_function
 
 ec = boto3.client('ec2')
-pp = pprint.PrettyPrinter(indent=4)
 
 def lambda_handler(event, context):
     reservations = ec.describe_instances(
@@ -45,6 +44,7 @@ def lambda_handler(event, context):
                         InstanceName = "NoInstanceName"
                 else:
                     InstanceName = "NoInstanceName"
+
         except IndexError:
             print("failed to get intance name for instance {}".format(instance['InstanceId']))
             exit(1)
@@ -69,14 +69,16 @@ def lambda_handler(event, context):
 
             # tag the snap right now.
             ec.create_tags(
-                Resources=snap['SnapshotId'],
+                Resources=[snap['SnapshotId']],
                 Tags=[
                     {'Key': 'CreatedBy', 'Value': 'ebs_snapshot_by_tag'},
                     {'Key': 'DeleteOn', 'Value': delete_fmt},
                     {'Key': 'InstanceName', 'Value': InstanceName},
-                    {'Key': 'DeviceName', 'Value': devicename},
+                    {'Key': 'DeviceName', 'Value': devicename}
                 ]
             )
+            time.sleep(1)
+            
 
             print "Adding snapshot id %s to retention tag queue" % snap['SnapshotId']
             to_tag[retention_days].append(snap['SnapshotId'])
@@ -101,4 +103,5 @@ def lambda_handler(event, context):
 #                {'Key': 'DeleteOn', 'Value': delete_fmt},
 #            ]
 #        )
+
 
