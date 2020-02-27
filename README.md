@@ -60,7 +60,7 @@ In terraform add:
 
 ```js
 module "snapshot" {
-    source = "git::ssh://git@github.com/carrotinsights/lambda-snapshot.git"
+    source = "git@github.com:drthornt/terraform-snapshot.git"
     customer          = "Customer"
     environment       = "prod"
     snap_schedule_expression  = "cron(13 23 * * ? *)"
